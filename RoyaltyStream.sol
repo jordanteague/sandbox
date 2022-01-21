@@ -13,7 +13,7 @@ contract RoyaltyStream {
 
     struct Account {
         address wallet;
-        uint percentage;
+        uint8 percentage;
         uint256 royalties;
         uint256 withdrawn;
     }
