@@ -1,0 +1,44 @@
+{
+  "name": "hardhat-project",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts": "^4.2.0",
+    "chai": "^4.3.4",
+    "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.4.2",
+    "hardhat": "^2.6.5",
+    "keccak256": "^1.0.3",
+    "merkletreejs": "^0.2.24"
+  },
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "next": "^11.1.2",
+    "next-routes": "^1.4.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.4",
+    "web3": "^1.7.0"
+  },
+  "description": "",
+  "version": "1.0.0",
+  "main": "hardhat.config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "dev": "NODE_OPTIONS='--inspect' next dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jordanteague/merkletree-smartcontracts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jordanteague/merkletree-smartcontracts/issues"
+  },
+  "homepage": "https://github.com/jordanteague/merkletree-smartcontracts#readme"
+}
