@@ -6,8 +6,6 @@ import instance from "../instance";
 const { MerkleTree } = require('merkletreejs');
 const keccak256 = require('keccak256');
 
-const listId_ = 3;
-
 class App extends Component {
 
   state = {
@@ -16,13 +14,17 @@ class App extends Component {
       root: null,
       loading: false,
       message: null,
-      messageVisible: false
+      messageVisible: false,
+      listCount: null
   }
 
   componentDidMount = async () => {
       const accounts = await web3.eth.getAccounts();
       this.setState({ accounts });
       this.createMerkleTree();
+      let listCount = parseInt(await instance.methods.listCount().call());
+      this.setState({ listCount });
+      console.log("listCount", listCount);
   }
 
   checkNetwork = async () => {
@@ -65,9 +67,10 @@ class App extends Component {
     const { root } = this.state;
 
     try {
-      let tx = await instance.methods.createWhitelist(listId_, Array(0), root).send({ from: this.state.accounts[0] });
+      let tx = await instance.methods.createWhitelist(Array(0), root).send({ from: this.state.accounts[0] });
       console.log(tx);
-      this.setState({ loading: false, messageVisible: true, message: "Successfully created whitelist" });
+      let listCount = parseInt(await instance.methods.listCount().call());
+      this.setState({ listCount: listCount, loading: false, messageVisible: true, message: "Successfully created whitelist" });
     } catch(e) {
       alert(e);
     }
@@ -77,11 +80,11 @@ class App extends Component {
     event.preventDefault();
     this.setState({ loading: true, messageVisible: false });
     this.checkNetwork();
-    const { merkleTree } = this.state;
+    const { merkleTree, listCount } = this.state;
     const claimer = this.state.accounts[0];
     const proof = merkleTree.getHexProof(keccak256(claimer));
     console.log(proof); //user will never actually need to see this
-    let tx = await instance.methods.joinWhitelist(listId_, claimer, proof).send({ from: claimer });
+    let tx = await instance.methods.joinWhitelist(listCount, claimer, proof).send({ from: claimer });
     console.log(tx);
     this.setState({ loading: false, messageVisible: true, message: "Successfully claimed whitelist status" });
   }
@@ -90,14 +93,15 @@ class App extends Component {
     event.preventDefault();
     this.checkNetwork();
     this.setState({ loading: true, messageVisible: false });
+    const { listCount } = this.state;
     const claimer = this.state.accounts[0];
-    let isWhiteListed = await instance.methods.isWhitelisted(listId_, claimer).call();
+    let isWhiteListed = await instance.methods.isWhitelisted(listCount, claimer).call();
     console.log("isWhiteListed", isWhiteListed);
     let message;
     if(isWhiteListed==true) {
-      message = "You are on the whitelist."
+      message = "You are on whitelist " + listCount + ".";
     } else {
-      message = "You are not on the whitelist. If you are eligible, please claim your whitelist spot."
+      message = "You are not on this whitelist. If you are eligible, please claim your whitelist spot."
     }
     this.setState({ message, loading: false, messageVisible: true });
   }
@@ -123,18 +127,18 @@ class App extends Component {
           <Segment textAlign='center'>
           <Form onSubmit={this.createWhitelist}>
             <Button primary><Icon name='add' />Create Whitelist</Button>
-            <p>List Id: {listId_}</p>
+            <p>List Id: {this.state.listCount + 1}</p>
             <p>Root: {this.state.root}</p>
           </Form>
           </Segment>
           <Segment textAlign='center'>
           <Form onSubmit={this.claimWhiteList}>
-            <Button primary><Icon name='add' />Claim Whitelist Status</Button>
+            <Button primary><Icon name='add' />Claim Whitelist Status for List {this.state.listCount}</Button>
           </Form>
           </Segment>
           <Segment textAlign='center'>
           <Form onSubmit={this.whitelisted}>
-            <Button primary><Icon name='check' />Confirm Whitelisted</Button>
+            <Button primary><Icon name='check' />Confirm Whitelisted on List {this.state.listCount}</Button>
           </Form>
           </Segment>
       </Layout>

@@ -145,8 +145,8 @@
       ]
     },
     "/Users/jordanteague/Workspace/eth/sandbox/merkle/contracts/KaliWhiteListManager.sol": {
-      "lastModificationDate": 1643234804325,
-      "contentHash": "e3bc8ab7cdb2b2ef1c217a76ef3655c9",
+      "lastModificationDate": 1643296787536,
+      "contentHash": "0c4290d4429863aa28156f5ce11a35f5",
       "sourceName": "contracts/KaliWhiteListManager.sol",
       "solcConfig": {
         "version": "0.8.4",
