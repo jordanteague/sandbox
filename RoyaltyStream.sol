@@ -41,6 +41,14 @@ contract RoyaltyStream {
 
     }
 
+    fallback () external payable {
+        this.deposit();
+    }
+
+    receive() external payable {
+        this.deposit();
+    }
+
     function deposit() external payable {
         totalRoyalties += msg.value;
 
