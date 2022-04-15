@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.10;
 
-// @author Experimental "poison pill" framework for ERC20 token, preventing a single wallet from holding more than a specified percentage of maxSupply.  Would be most effective if used in conjunction with voting in members, where wallet addresses are tied to known individuals.
+// @author Experimental "poison pill" framework for ERC20 token, preventing a single wallet from holding more than a specified percentage of maxSupply.  
+// @author Would be most effective in context where wallet addresses are tied to unique individuals, and where tokenholders vote on mint/transfer occurring.
 
 import "./ERC20.sol";
 
