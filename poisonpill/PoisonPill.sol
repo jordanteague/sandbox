@@ -12,7 +12,7 @@ contract PoisonPill is ERC20 {
     error RatioBounds();
     error MaxSupply();
     error MaxQuantity();
-    error InsufficientFunds();
+    error WrongAmount();
 
     constructor(
         string memory _name,
@@ -81,7 +81,7 @@ contract PoisonPill is ERC20 {
     function mint(address to, uint256 amount) external payable returns(bool) {
         if(totalSupply + amount > maxSupply) revert MaxSupply();
         if(balanceOf[to] + amount > (maxSupply / ratio)) revert MaxQuantity();
-        if(price * amount > msg.value) revert InsufficientFunds();
+        if(price * amount != msg.value) revert WrongAmount();
 
         _mint(to, amount);
         return true;
