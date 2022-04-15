@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.10;
 
+// @author Experimental "poison pill" framework for ERC20 token, preventing a single wallet from holding more than a specified percentage of maxSupply.
+
 import "./ERC20.sol";
 
 contract PoisonPill is ERC20 {
@@ -27,17 +29,6 @@ contract PoisonPill is ERC20 {
         price = _price;
     }
 
-    function adjustBalances(address to) public returns(bool) {
-        if(balanceOf[to] > maxSupply / ratio) {
-            uint256 excess = ((ratio * balanceOf[to]) - maxSupply) / (ratio - 1);
-            uint256 remainder = ((ratio * balanceOf[to]) - maxSupply) % (ratio - 1);
-            if(remainder > 0) excess += remainder;
-            _burn(to, excess);
-        }
-
-        return true;
-    }
-
     function transfer(address to, uint256 amount) public override returns(bool) {
         balanceOf[msg.sender] -= amount;
 
@@ -49,7 +40,7 @@ contract PoisonPill is ERC20 {
 
         emit Transfer(msg.sender, to, amount);
 
-        adjustBalances(to);
+        _adjustBalances(to);
 
         return true;
     }
@@ -73,7 +64,7 @@ contract PoisonPill is ERC20 {
 
         emit Transfer(from, to, amount);
 
-        adjustBalances(to);
+        _adjustBalances(to);
 
         return true;
     }
@@ -84,6 +75,17 @@ contract PoisonPill is ERC20 {
         if(price * amount != msg.value) revert WrongAmount();
 
         _mint(to, amount);
+        return true;
+    }
+
+    function _adjustBalances(address to) internal returns(bool) {
+        if(balanceOf[to] > maxSupply / ratio) {
+            uint256 excess = ((ratio * balanceOf[to]) - maxSupply) / (ratio - 1);
+            uint256 remainder = ((ratio * balanceOf[to]) - maxSupply) % (ratio - 1);
+            if(remainder > 0) excess += remainder;
+            _burn(to, excess);
+        }
+
         return true;
     }
 
