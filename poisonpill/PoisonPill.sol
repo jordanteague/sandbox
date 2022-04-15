@@ -76,14 +76,13 @@ contract PoisonPill is ERC20 {
         if(price * amount != msg.value) revert WrongAmount();
 
         _mint(to, amount);
+
         return true;
     }
 
     function _adjustBalances(address to) internal returns(bool) {
         if(balanceOf[to] > maxSupply / ratio) {
-            uint256 excess = ((ratio * balanceOf[to]) - maxSupply) / (ratio - 1);
-            uint256 remainder = ((ratio * balanceOf[to]) - maxSupply) % (ratio - 1);
-            if(remainder > 0) excess += remainder;
+            uint256 excess = balanceOf[to] - (maxSupply / ratio);
             _burn(to, excess);
         }
 
