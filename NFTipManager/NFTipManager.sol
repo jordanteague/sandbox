@@ -34,6 +34,14 @@ contract NFTipManager is ERC721, LexOwnable {
         // TO BE IMPLEMENTED
     }
 
+    function transferFrom(
+        address from,
+        address to,
+        uint256 id
+    ) public override {
+        revert("SIGNATURE_REQUIRED_FOR_TRANSFER");
+    }
+
     function safeTransferFrom(
         address from,
         address to,
