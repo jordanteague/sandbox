@@ -48,7 +48,7 @@ contract NFTipManager is ERC721, LexOwnable {
         uint256 id,
         bytes calldata data
     ) public override {
-        _beforeTokenTransfer(from, to, id, data);
+        _signIPtransfer(from, to, id, data);
 
         transferFrom(from, to, id);
 
@@ -60,15 +60,6 @@ contract NFTipManager is ERC721, LexOwnable {
                 ERC721TokenReceiver.onERC721Received.selector,
             "UNSAFE_RECIPIENT"
         );
-    }
-
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 id,
-        bytes calldata data
-    ) internal {
-        _signIPtransfer(from, to, id, data);
     }
 
     // Require transferor to sign message in UI representing that they still own IP and that they consent to transfer
