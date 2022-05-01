@@ -39,7 +39,6 @@ contract NFTipManager is ERC721, LexOwnable {
         uint256 id,
         bytes calldata data
     ) public override {
-
         _beforeTokenTransfer(from, to, id, data);
 
         transferFrom(from, to, id);
