@@ -4,7 +4,7 @@ pragma solidity 0.8.10;
 import "./ERC721.sol";
 import "./LexOwnable.sol";
 
-contract NFTip is ERC721, LexOwnable {
+contract NFTipManager is ERC721, LexOwnable {
 
     /// @dev EIP-712 variables:
     bytes32 public immutable DOMAIN_SEPARATOR;
