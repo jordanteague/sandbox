@@ -8,10 +8,11 @@ import "./LexOwnable.sol";
 
 contract NFTipManager is ERC721, LexOwnable {
 
+    event IPtransfer(address from, address to, uint256 id);
+
     /// @dev EIP-712 variables:
     bytes32 public immutable DOMAIN_SEPARATOR;
-    bytes32 public constant SIG_HASH = keccak256("SignIPtransfer(address from, address to, uint256 id, bytes data)");
-    mapping(uint256 => address[]) public ipChain;
+    bytes32 public constant SIG_HASH = keccak256("SignIPtransfer(address from, string message)");
 
     constructor(
         string memory _name, 
@@ -36,12 +37,22 @@ contract NFTipManager is ERC721, LexOwnable {
     function safeTransferFrom(
         address from,
         address to,
+        uint256 id
+    ) public override {
+        revert("SIGNATURE_REQUIRED_FOR_TRANSFER");
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
         uint256 id,
         bytes calldata data
     ) public override {
         _beforeTokenTransfer(from, to, id, data);
 
         transferFrom(from, to, id);
+
+        emit IPtransfer(from, to, id);
 
         require(
             to.code.length == 0 ||
@@ -58,22 +69,24 @@ contract NFTipManager is ERC721, LexOwnable {
         bytes calldata data
     ) internal {
         _signIPtransfer(from, to, id, data);
-        ipChain[id].push(to);
     }
 
+    // Require transferor to sign message in UI representing that they still own IP and that they consent to transfer
+    // Consider storing this signed message offline and/or producing 'document' format for transfer parties' records
     function _signIPtransfer(
         address from,
         address to,
         uint256 id,
         bytes calldata data
     ) internal returns(bool) {
-        // decode data into v, r, s
+        // decode data into v, r, s, message
         (
             uint8 v,
             bytes32 r,
-            bytes32 s
+            bytes32 s,
+            string memory message
         ) 
-            = abi.decode(data, (uint8, bytes32, bytes32));
+            = abi.decode(data, (uint8, bytes32, bytes32, string));
         // recover signature
         bytes32 digest =
             keccak256(
@@ -84,7 +97,7 @@ contract NFTipManager is ERC721, LexOwnable {
                         abi.encode(
                             SIG_HASH,
                             from,
-                            id
+                            message
                         )
                     )
                 )
@@ -97,21 +110,10 @@ contract NFTipManager is ERC721, LexOwnable {
     // for POC simplicity, minting is restricted to owner, but could instead be pay-walled with a capped supply
     function mint(address to, uint256 id, bytes memory data) public onlyOwner {
         _safeMint(to, id, data);
-        ipChain[id].push(to);
         // PROJECT OWNER MAY INCLUDE HUMAN-READABLE TRANSFER LANGUAGE HERE.
     }
 
     function burn(uint256 id) public onlyOwner {
         _burn(id);
-        ipChain[id] = [0x0000000000000000000000000000000000000000];
-    }
-
-    function getIPchain(uint256 _id) public view returns(address[] memory _chain) {
-        _chain = ipChain[_id];
-    }
-
-    function getCurrentIPowner(uint256 _id) public view returns(address _currentOwner) {
-        uint256 last = ipChain[_id].length - 1;
-        _currentOwner = ipChain[_id][last];
     }
 }
