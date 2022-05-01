@@ -30,7 +30,7 @@ contract NFTipManager is ERC721, LexOwnable {
     }
 
     function tokenURI(uint256 id) public view override returns (string memory) {
-
+        // TO BE IMPLEMENTED
     }
 
     function safeTransferFrom(
