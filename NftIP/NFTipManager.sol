@@ -109,8 +109,9 @@ contract NFTipManager is ERC721, LexOwnable {
 
     // for POC simplicity, minting is restricted to owner, but could instead be pay-walled with a capped supply
     function mint(address to, uint256 id, bytes memory data) public onlyOwner {
-        _safeMint(to, id, data);
         // PROJECT OWNER MAY INCLUDE HUMAN-READABLE TRANSFER LANGUAGE HERE.
+        _safeMint(to, id, data);
+        emit IPtransfer(address(this), to, id);
     }
 
     function burn(uint256 id) public onlyOwner {
