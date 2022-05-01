@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+
+// @author Experimental method for complying with "signed writing" requirement under U.S. law for copyright transfer.
 pragma solidity 0.8.10;
 
 import "./ERC721.sol";
