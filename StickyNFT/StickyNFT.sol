@@ -40,6 +40,7 @@ contract StickyNFT is ERC721, Owned {
         _safeMint(to, counter);
         counter++;
     }
+    
     function burn(uint256 id) public onlyOwner {
         _burn(id);
     }
