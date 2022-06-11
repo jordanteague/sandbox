@@ -31,7 +31,7 @@ contract TrustAccount is Owned, ReentrancyGuard {
     }
 
     function manualAccounting(address client, address asset, uint256 amount) public nonReentrant onlyOwner {
-        _accounting(msg.sender, asset, amount);
+        _accounting(client, asset, amount);
     }
 
     function disburse(address client, address asset, uint256 amount, address to) public payable nonReentrant onlyOwner {
