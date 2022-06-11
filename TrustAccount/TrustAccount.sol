@@ -21,7 +21,7 @@ contract TrustAccount is Owned, ReentrancyGuard {
 
     }
 
-    function assign(address client, address asset, uint256 amount) public onlyOwner {
+    function assign(address client, address asset, uint256 amount) public nonReentrant onlyOwner {
         uint256 balance = IERC20minimal(asset).balanceOf(address(this));
         uint256 unassigned = balance - assigned[asset];
         if(unassigned < amount) revert InsufficientBalance();
